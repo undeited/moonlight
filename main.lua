@@ -31379,25 +31379,6 @@ end
 			end
 
 			if child.Name == "GrabParts" then
-				if tbl7.CombatSilentAim and tbl7.CombatSilentAim.Enabled then
-					task.spawn(function()
-						local grabPart = child:WaitForChild("GrabPart", 1)
-						local weld = grabPart and grabPart:WaitForChild("WeldConstraint", 1)
-						local deadline = os.clock() + 1
-
-						while weld and not weld.Part1 and child.Parent and os.clock() < deadline do
-							task.wait()
-						end
-
-						local held = weld and weld.Part1
-						local model = held and held:FindFirstAncestorWhichIsA("Model")
-						local grabbedPlayer = model and getPlayerFromCharacter(model)
-
-						if grabbedPlayer and tbl7.CombatSilentAim then
-							tbl7.CombatSilentAim.OnGrab(grabbedPlayer)
-						end
-					end)
-				end
 
 				local beamPart = child:WaitForChild("BeamPart", 0.1)
 				beamPart = beamPart and beamPart:WaitForChild("GrabBeam", 0.1)
@@ -35167,15 +35148,6 @@ Escape Timer: %*]]
 			local patch = {}
 
 			local function wrapper(self, ...)
-				if silentAim.Enabled and self == tbl11.CreateGrabLine and not flag11 and getnamecallmethod() == "FireServer" and not (checkcaller and checkcaller()) then
-					local part = ...
-					local model = typeof(part) == "Instance" and part:IsA("BasePart") and part:FindFirstAncestorWhichIsA("Model")
-					local player = model and getPlayerFromCharacter(model)
-
-					if player then
-						task.defer(silentAim.OnGrab, player)
-					end
-				end
 
 				if
 					silentAim.Enabled
