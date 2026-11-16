@@ -17057,7 +17057,7 @@ do
 									HighlightEnabled = true,
 									FillColor = Color3.new(1, 0, 0),
 									OutlineColor = Color3.new(1, 1, 1),
-									FillTransparency = 0,
+									FillTransparency = 1,
 									OutlineTransparency = 0,
 									NameEnabled = true,
 									NameFont = "Arial|Bold",
@@ -34226,6 +34226,195 @@ Escape Timer: %*]]
 			Greetings:AddLabel({ Text = ("%s, <b>%s</b> "):format(greeting, localPlayer.DisplayName), DoesWrap = true })
 			Greetings:AddDivider()
 			Greetings:AddLabel({ Text = "Welcome to <b><font color=\"#b0c4ff\">Moonlight</font></b>", DoesWrap = true })
+		end
+
+		do
+			local FriendsGroup = tbl15.Home:AddLeftGroupbox("Friends In Game", "users")
+			local HttpService = game:GetService("HttpService")
+			local TeleportService = game:GetService("TeleportService")
+			local FriendEntries = {}
+			local Refreshing = false
+			local RefreshCount = 0
+			local MaxShown = 20
+			local MaxIdsPerRequest = 100
+			local RequestFn = (syn and syn.request) or http_request or request or (http and http.request)
+
+			local function ClearEntries()
+				for _, entry in ipairs(FriendEntries) do
+					pcall(function()
+						entry:Destroy()
+					end)
+				end
+				table.clear(FriendEntries)
+			end
+
+			local function GetFriends()
+				local friends = {}
+				local ok, pages = pcall(Players.GetFriendsAsync, Players, localPlayer.UserId)
+				if not ok or not pages then
+					return friends
+				end
+
+				local pageCount = 0
+				while true do
+					local okPage, current = pcall(function()
+						return pages:GetCurrentPage()
+					end)
+					if not okPage then
+						break
+					end
+
+					for _, info in ipairs(current) do
+						friends[info.Id] = info
+					end
+
+					pageCount += 1
+					if pages.IsFinished or pageCount > 50 then
+						break
+					end
+					if not pcall(pages.AdvanceToNextPageAsync, pages) then
+						break
+					end
+				end
+
+				return friends
+			end
+
+			local function GetPresence(userIds)
+				local presences = {}
+				if not RequestFn then
+					return presences
+				end
+
+				for start = 1, #userIds, MaxIdsPerRequest do
+					local stop = math.min(start + MaxIdsPerRequest - 1, #userIds)
+					local chunk = table.move(userIds, start, stop, 1, {})
+
+					local ok, response = pcall(RequestFn, {
+						Url = "https://presence.roblox.com/v1/presence/users",
+						Method = "POST",
+						Headers = { ["Content-Type"] = "application/json" },
+						Body = HttpService:JSONEncode({ userIds = chunk }),
+					})
+
+					if ok and type(response) == "table" and type(response.Body) == "string" then
+						local decodedOk, decoded = pcall(HttpService.JSONDecode, HttpService, response.Body)
+						if decodedOk and type(decoded) == "table" and type(decoded.userPresences) == "table" then
+							for _, presence in ipairs(decoded.userPresences) do
+								table.insert(presences, presence)
+							end
+						end
+					end
+				end
+
+				return presences
+			end
+
+			local function DoRefresh()
+				RefreshCount += 1
+				ClearEntries()
+
+				local friends = GetFriends()
+				local ids = {}
+				for id in pairs(friends) do
+					table.insert(ids, id)
+				end
+
+				local inThisGame = {}
+				for _, presence in ipairs(GetPresence(ids)) do
+					if presence.userPresenceType == 2 and presence.placeId == game.PlaceId then
+						table.insert(inThisGame, presence)
+					end
+				end
+
+				if #inThisGame == 0 then
+					table.insert(FriendEntries, FriendsGroup:AddLabel({
+						Text = "No friends are in this game right now.",
+						DoesWrap = true,
+					}))
+				end
+
+				for index, presence in ipairs(inThisGame) do
+					if index > MaxShown then
+						break
+					end
+
+					local friend = friends[presence.userId] or {}
+					local displayName = tostring(friend.DisplayName or friend.Username or presence.userId)
+					displayName = displayName:gsub("<", "&lt;"):gsub(">", "&gt;")
+
+					local gameId = presence.gameId
+					local sameServer = gameId ~= nil and gameId == game.JobId
+					local joinable = gameId ~= nil and not sameServer
+					local buttonText = "Join"
+					if sameServer then
+						buttonText = "Same server"
+					elseif not joinable then
+						buttonText = "Can't join"
+					end
+
+					local headshot = FriendsGroup:AddImage(string.format("FriendHeadshot_%d_%d", RefreshCount, presence.userId), {
+						Image = string.format("rbxthumb://type=AvatarHeadShot&id=%d&w=150&h=150", presence.userId),
+						Height = 60,
+						Color = Color3.new(1, 1, 1),
+						Transparency = 0,
+						BackgroundTransparency = 1,
+						ScaleType = Enum.ScaleType.Fit,
+					})
+
+					local nameLabel = FriendsGroup:AddLabel({
+						Text = string.format("<b>%s</b>", displayName),
+						DoesWrap = true,
+					})
+
+					local joinButton = FriendsGroup:AddButton({
+						Text = buttonText,
+						Disabled = not joinable,
+						Func = function()
+							local ok, err = pcall(function()
+								TeleportService:TeleportToPlaceInstance(game.PlaceId, gameId, localPlayer)
+							end)
+							if not ok then
+								warn("Couldn't join friend: " .. tostring(err))
+							end
+						end,
+					})
+
+					table.insert(FriendEntries, headshot)
+					table.insert(FriendEntries, nameLabel)
+					table.insert(FriendEntries, joinButton)
+				end
+			end
+
+			local function Refresh()
+				if Refreshing or flag11 then
+					return
+				end
+				Refreshing = true
+				local ok, err = pcall(DoRefresh)
+				Refreshing = false
+				if not ok then
+					warn("Friends In Game refresh failed: " .. tostring(err))
+				end
+			end
+
+			FriendsGroup:AddButton({
+				Text = "Refresh",
+				Func = function()
+					task.spawn(Refresh)
+				end,
+			})
+
+			task.spawn(function()
+				Refresh()
+				while not flag11 do
+					task.wait(60)
+					if flag11 then
+						break
+					end
+					Refresh()
+				end
+			end)
 		end
 
 		do
