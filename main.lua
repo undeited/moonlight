@@ -35709,7 +35709,7 @@ Escape Timer: %*]]
 		Troll:AddToggle("FlingAuraTroll", {
 			Text = "Fling Aura Troll",
 			Default = false,
-			Tooltip = "Noclips, freezes and only goes 15 studs directly below the selected player while they are standing on the ground. While they are airborne you stay hidden at your last underground position. Returns you to where you were when the target leaves. Runs the same fling as the Combat tab Fling aura on everyone within the Aura Distance of you, while the target is touching the ground",
+			Tooltip = "Noclips, freezes and only goes 15 studs directly below the selected player while they are standing on the ground. While they are airborne you stay hidden at your last underground position. Returns you to where you were when the target leaves. Runs the same fling as the Combat tab Fling aura on the selected target while they are within the Aura Distance of you and touching the ground",
 			Callback = function(enabled)
 				tbl8.FlingAuraTroll = enabled
 				trollToken += 1
@@ -35912,8 +35912,8 @@ Escape Timer: %*]]
 							local auraDistance = tbl9.AuraDistance
 							local maxDistanceSquared = auraDistance * auraDistance
 
-							for _, player in ipairs(tbl12.GetTargets(true)) do
-								if not tbl7.SelectedPlayersTroll[player] then
+							for player in pairs(tbl7.SelectedPlayersTroll) do
+								if not tbl12.IsProtectedPlayer(player) then
 									local _, root, humanoid = tbl12.Char(player)
 
 									if root and humanoid and humanoid.Health > 0 then
