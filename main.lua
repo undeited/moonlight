@@ -22233,6 +22233,39 @@ end
 									end
 								end)
 
+				task.spawn(function()
+					local lastUrl = nil
+					while not flag11 and arg.Parent do
+						task.wait(30)
+						local entryRef = obj3[arg]
+						if flag11 or not arg.Parent or not entryRef then
+							continue
+						end
+
+						local okReq, body = pcall(game.HttpGet, game, string.format(
+							"https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=%d&size=48x48&format=Png&isCircular=false",
+							arg.UserId
+						))
+						if okReq and type(body) == "string" then
+							local okDec, decoded = pcall(function()
+								return game:GetService("HttpService"):JSONDecode(body)
+							end)
+							local url = okDec and type(decoded) == "table" and decoded.data and decoded.data[1] and decoded.data[1].imageUrl
+
+							if url and url ~= lastUrl then
+								if lastUrl ~= nil and entryRef.Icon and entryRef.Icon.Parent then
+									local newIcon = tbl12.GetPlayerIcon(arg)
+									if newIcon then
+										entryRef.Thumbnail = newIcon
+										entryRef.Icon.Image = newIcon
+									end
+								end
+								lastUrl = url
+							end
+						end
+					end
+				end)
+
 								local function fn24(character)
 									if flag11 or not tbl8.PlayerESP or not character then
 										return
