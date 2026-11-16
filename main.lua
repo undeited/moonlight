@@ -22176,8 +22176,8 @@ end
 								end
 								local playerESP = tbl8.PlayerESP
 								v23.Highlight.FillColor = player.FillColor
-								v23.Highlight.OutlineColor = player.OutlineColor
-								v23.Highlight.FillTransparency = player.FillTransparency
+								v23.Highlight.OutlineColor = Color3.new(1, 0, 0)
+								v23.Highlight.FillTransparency = 1
 								v23.Highlight.OutlineTransparency = player.OutlineTransparency
 								v23.Highlight.Enabled = playerESP and player.HighlightEnabled
 								v23.Billboard.StudsOffset = Vector3.new(0, player.NameYOffset, 0)
