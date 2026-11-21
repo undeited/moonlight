@@ -34771,18 +34771,14 @@ Escape Timer: %*]]
 				end,
 			})
 
-			Players2:AddToggle("LoopTPToPlayer", {
-				Text = "Loop TP to Player",
-				Default = false,
-				Callback = function()
-					while toggles.LoopTPToPlayer.Value and task.wait() do
-						local v22
-						v22, v22 = tbl12.Char()
-						local v23, v24 = tbl12.Char(options.TeleportTargetsDropdown.Value)
+			Players2:AddButton({
+				Text = "Teleport to Player",
+				Func = function()
+					local _, localRootPart = tbl12.Char()
+					local _, targetRootPart = tbl12.Char(options.TeleportTargetsDropdown.Value)
 
-						if v22 and v24 then
-							v22.CFrame = v24.CFrame * CFrame.new(0, 0, 2)
-						end
+					if localRootPart and targetRootPart then
+						localRootPart.CFrame = targetRootPart.CFrame * CFrame.new(0, 0, 2)
 					end
 				end,
 			})
