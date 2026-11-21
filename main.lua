@@ -16715,7 +16715,6 @@ do
 							AutoExplodeTarget = false,
 							AutoExplodeServer = false,
 							FlingAuraTroll = false,
-							FlingAuraTrollAura = false,
 							CoconutForms = false,
 							BreakAllHoldables = false,
 							HighlightBrokenParts = false,
@@ -18777,7 +18776,7 @@ local player = game:GetService("Players").LocalPlayer
 if not player then return end
 local scripts = player:WaitForChild("PlayerScripts", 15)
 if scripts then
-    for _, name in ipairs({"StickyPartsTouchDetection"}) do
+    for _, name in ipairs({"CharacterAndBeamMove", "StickyPartsTouchDetection"}) do
         local item = scripts:WaitForChild(name, 10)
         if item then item.Enabled = not %s end
     end
@@ -35669,16 +35668,6 @@ Escape Timer: %*]]
 	do
 		local Troll = tbl15.Combat:AddRightGroupbox("Troll", "skull")
 		tbl12.CreatePlayerDropdown(Troll, "FlingAuraTroll", tbl7.SelectedPlayersTroll)
-
-		Troll:AddToggle("FlingAuraTrollAura", {
-			Text = "Aura",
-			Default = false,
-			Tooltip = "Flings the selected players while they are within the Aura Distance of you and touching the ground. Only works while Troll is on",
-			Callback = function(enabled)
-				tbl8.FlingAuraTrollAura = enabled
-			end,
-		})
-
 		Troll:AddDivider()
 
 		local trollToken = 0
@@ -35714,9 +35703,9 @@ Escape Timer: %*]]
 		end
 
 		Troll:AddToggle("FlingAuraTroll", {
-			Text = "Troll",
+			Text = "Fling Aura Troll",
 			Default = false,
-			Tooltip = "Noclips, freezes and only goes 15 studs directly below the selected player while they are standing on the ground. While they are airborne you stay hidden at your last underground position. Returns you to where you were when the target leaves. Enable Aura above to also fling the selected players while they are within the Aura Distance of you and touching the ground",
+			Tooltip = "Noclips, freezes and only goes 15 studs directly below the selected player while they are standing on the ground. While they are airborne you stay hidden at your last underground position. Returns you to where you were when the target leaves. Runs the same fling as the Combat tab Fling aura on the selected target while they are within the Aura Distance of you and touching the ground",
 			Callback = function(enabled)
 				tbl8.FlingAuraTroll = enabled
 				trollToken += 1
@@ -35912,7 +35901,7 @@ Escape Timer: %*]]
 							local _, myRoot, myHumanoid = tbl12.Char()
 							local anchorRoot, grounded = getAnchor()
 
-							if not (myRoot and myHumanoid and myHumanoid.Health > 0 and anchorRoot and grounded and trollReturnCFrame and tbl8.FlingAuraTrollAura) then
+							if not (myRoot and myHumanoid and myHumanoid.Health > 0 and anchorRoot and grounded and trollReturnCFrame) then
 								return
 							end
 
@@ -36240,6 +36229,7 @@ Escape Timer: %*]]
 					toggles.AntiLag:SetValue(true)
 					return
 				end
+				localPlayer.PlayerScripts.CharacterAndBeamMove.Enabled = enabled
 				localPlayer.PlayerScripts.StickyPartsTouchDetection.Enabled = enabled
 				tbl12.SetAntiShurikenLag(arg)
 
