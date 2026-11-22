@@ -251,6 +251,7 @@ local Library = {
 	ForceCheckbox = false,
 
 	CantDragForced = false,
+	CantDragSections = true,
 	DraggableElements = {},
 
 	PopOutSnapDistance = 80,
@@ -2857,6 +2858,10 @@ function Library:MakeBoxPopOut(Box: any, Options: {
 	end
 
 	local function BeginDrag(Input: InputObject)
+		if Library.CantDragSections then
+			return
+		end
+
 		if DragState ~= "Idle" or Box.Destroyed or not (ScreenGui and ScreenGui.Parent) then
 			return
 		end
@@ -34746,31 +34751,6 @@ Escape Timer: %*]]
 			local Players2 = tbl15.Player:AddRightGroupbox("Players", "users")
 			tbl12.CreatePlayerDropdown(Players2, "TeleportTargets", tbl7.SelectedTeleportPlayers, false, false)
 
-			Players2:AddToggle("LoopSpectatePlayer", {
-				Text = "Spectate Player",
-				Default = false,
-				Callback = function()
-					task.spawn(function()
-						while toggles.LoopSpectatePlayer.Value and task.wait() do
-							local v22, v23, v24 = tbl12.Char()
-							local v25, v26, v27 = tbl12.Char(options.TeleportTargetsDropdown.Value)
-
-							if v23 and v26 and v27 then
-								currentCamera.CameraSubject = v27
-							else
-								currentCamera.CameraSubject = v24
-							end
-						end
-
-						local v22, v23, v24 = tbl12.Char()
-
-						if v24 then
-							currentCamera.CameraSubject = v24
-						end
-					end)
-				end,
-			})
-
 			Players2:AddButton({
 				Text = "Teleport to Player",
 				Func = function()
@@ -35667,7 +35647,7 @@ Escape Timer: %*]]
 
 	do
 		local Troll = tbl15.Combat:AddRightGroupbox("Troll", "skull")
-		tbl12.CreatePlayerDropdown(Troll, "FlingAuraTroll", tbl7.SelectedPlayersTroll)
+		tbl12.CreatePlayerDropdown(Troll, "FlingAuraTroll", tbl7.SelectedPlayersTroll, false)
 		Troll:AddDivider()
 
 		local trollToken = 0
