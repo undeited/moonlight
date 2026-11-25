@@ -35658,7 +35658,7 @@ Escape Timer: %*]]
 		local trollLostSince = nil
 		local trollLastHold = nil
 
-		local TROLL_DEPTH = 15
+		local TROLL_DEPTH = 31
 		local TROLL_GRACE = 1.5
 		local trollBusy = {}
 
