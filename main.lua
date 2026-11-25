@@ -35583,7 +35583,7 @@ Escape Timer: %*]]
 		})
 
 		Auras:AddSlider("AuraSlider", {
-			Text = "'Aura Distance'",
+			Text = "Aura Distance",
 			Default = 5,
 			Min = 5,
 			Max = 31,
@@ -40942,9 +40942,6 @@ Escape Timer: %*]]
 		end,
 	})
 
-	-- ============================================================
-	-- Crash: fling everything + remote spam. Button "Crash".
-	-- ============================================================
 	do
 		local RunService = game:GetService("RunService")
 		local PlayersService = game:GetService("Players")
@@ -41044,8 +41041,8 @@ Escape Timer: %*]]
 		end
 
 		Crash:AddButton({
-			Text = "Crash",
-			Tooltip = "Flings every unanchored part and player while spamming remotes for 30 seconds",
+			Text = "Crash Server",
+			Tooltip = "Flings every unanchored part and player while spamming remotes until the server crashes",
 			Callback = function()
 				CrashServer()
 			end,
