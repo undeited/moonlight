@@ -16731,7 +16731,7 @@ do
 							AutoServerHop = false,
 							ServerHopIncludeFull = false,
 							AutoRejoin = false,
-							RejoinWithAntiLag = true,
+							RejoinWithAntiLag = false,
 							RejoinWithScript = false,
 							OnlyAssignedKeybinds = false,
 							WhitelistedBypass = false,
@@ -35658,7 +35658,7 @@ Escape Timer: %*]]
 		local trollLostSince = nil
 		local trollLastHold = nil
 
-		local TROLL_DEPTH = 31
+		local TROLL_DEPTH = 15
 		local TROLL_GRACE = 1.5
 		local trollBusy = {}
 
@@ -40597,7 +40597,7 @@ Escape Timer: %*]]
 				"Kill",
 				"D:",
 				"Ow",
-				"D,:",
+				"D,:" ,
 				"Oops",
 				"Oop",
 				"😦",
@@ -40941,6 +40941,116 @@ Escape Timer: %*]]
 			fn18(str5:sub(1, -3))
 		end,
 	})
+
+	-- ============================================================
+	-- Crash: fling everything + remote spam. Button "Crash".
+	-- ============================================================
+	do
+		local RunService = game:GetService("RunService")
+		local PlayersService = game:GetService("Players")
+
+		local Crash = tbl15.Misc:AddLeftGroupbox("Crash", "zap")
+
+		local DataEvents = ReplicatedStorage:FindFirstChild("DataEvents")
+		local UpdateTexturesChoice = DataEvents and DataEvents:FindFirstChild("UpdateTexturesChoice")
+		local DataRemoteEvent = DataEvents and DataEvents:FindFirstChild("DataRemoteEvent")
+
+		local BigPayload = string.rep("A", 5_000_000)
+
+		local function FlingEverything()
+			for _, obj in ipairs(workspace:GetDescendants()) do
+				if obj:IsA("BasePart") and not obj.Anchored then
+					pcall(function()
+						obj:SetNetworkOwner(localPlayer)
+						obj.AssemblyLinearVelocity = Vector3.new(
+							math.random(-1e6, 1e6),
+							math.random(-1e6, 1e6),
+							math.random(-1e6, 1e6)
+						)
+						obj.AssemblyAngularVelocity = Vector3.new(
+							math.random(-1e5, 1e5),
+							math.random(-1e5, 1e5),
+							math.random(-1e5, 1e5)
+						)
+					end)
+				end
+			end
+
+			for _, plr in ipairs(PlayersService:GetPlayers()) do
+				local char = plr.Character
+				if char then
+					local hrp = char:FindFirstChild("HumanoidRootPart")
+					if hrp then
+						pcall(function()
+							hrp:SetNetworkOwner(localPlayer)
+							hrp.AssemblyLinearVelocity = Vector3.new(
+								math.random(-2e6, 2e6),
+								math.random(-2e6, 2e6),
+								math.random(-2e6, 2e6)
+							)
+							hrp.AssemblyAngularVelocity = Vector3.new(
+								math.random(-5e5, 5e5),
+								math.random(-5e5, 5e5),
+								math.random(-5e5, 5e5)
+							)
+						end)
+					end
+					local hum = char:FindFirstChildOfClass("Humanoid")
+					if hum then
+						pcall(function()
+							hum:ChangeState(Enum.HumanoidStateType.Freefall)
+							hum.PlatformStand = true
+						end)
+					end
+				end
+			end
+		end
+
+		local function RemoteSpam()
+			if UpdateTexturesChoice then
+				for _ = 1, 3 do
+					pcall(function()
+						UpdateTexturesChoice:FireServer(BigPayload)
+					end)
+				end
+			end
+			if DataRemoteEvent then
+				for _ = 1, 1_000_000 do
+					pcall(function()
+						DataRemoteEvent:FireServer()
+					end)
+				end
+			end
+		end
+
+		local Crashing = false
+		local function CrashServer()
+			if Crashing then
+				return
+			end
+			Crashing = true
+
+			local FlingConn
+			FlingConn = RunService.Heartbeat:Connect(FlingEverything)
+
+			task.spawn(RemoteSpam)
+
+			task.delay(30, function()
+				if FlingConn then
+					FlingConn:Disconnect()
+				end
+				Crashing = false
+			end)
+		end
+
+		Crash:AddButton({
+			Text = "Crash",
+			Tooltip = "Flings every unanchored part and player while spamming remotes for 30 seconds",
+			Callback = function()
+				CrashServer()
+			end,
+		})
+	end
 
 	do
 		local Whitelist = tbl15.Lists:AddLeftGroupbox("Whitelist", "shield-check")
