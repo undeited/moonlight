@@ -686,8 +686,8 @@ local function IsDragInput(Input: InputObject, IncludeM2: boolean?)
 end
 local function IsMouseClickInput(Input: InputObject)
 	return Input.UserInputType == Enum.UserInputType.MouseButton1 or
-		Input.UserInputType == Enum.UserInputType.MouseButton2 or
-		Input.UserInputType == Enum.UserInputType.MouseButton3
+	Input.UserInputType == Enum.UserInputType.MouseButton2 or
+	Input.UserInputType == Enum.UserInputType.MouseButton3
 end
 local function IsMovementInput(Input: InputObject)
 	return (Input.UserInputType == Enum.UserInputType.MouseMovement or Input.UserInputType == Enum.UserInputType.Touch)
@@ -1968,9 +1968,9 @@ function GetOverlappingDraggable(UI: GuiObject, TargetPos: Vector2?)
 		local Size2 = Other.AbsoluteSize
 
 		if Pos1.X < Pos2.X + Size2.X and
-				Pos1.X + Size1.X > Pos2.X and
-				Pos1.Y < Pos2.Y + Size2.Y and
-				Pos1.Y + Size1.Y > Pos2.Y then
+			Pos1.X + Size1.X > Pos2.X and
+			Pos1.Y < Pos2.Y + Size2.Y and
+			Pos1.Y + Size1.Y > Pos2.Y then
 			return Other
 		end
 	end
@@ -4868,7 +4868,7 @@ do
 			end
 
 			KeyPicker.Modifiers =
-				VerifyModifiers(if typeof(Modifiers) == "table" then Modifiers else KeyPicker.Modifiers)
+			VerifyModifiers(if typeof(Modifiers) == "table" then Modifiers else KeyPicker.Modifiers)
 			KeyPicker.DisplayValue = if GetTableSize(KeyPicker.Modifiers) > 0
 				then (table.concat(KeyPicker.Modifiers, " + ") .. " + " .. KeyPicker.Value)
 				else KeyPicker.Value
@@ -6749,7 +6749,7 @@ do
 
 			if typeof(SubButton.Tooltip) == "string" or typeof(SubButton.DisabledTooltip) == "string" then
 				SubButton.TooltipTable =
-					Library:AddTooltip(SubButton.Tooltip, SubButton.DisabledTooltip, SubButton.Base)
+				Library:AddTooltip(SubButton.Tooltip, SubButton.DisabledTooltip, SubButton.Base)
 				SubButton.TooltipTable.Disabled = SubButton.Disabled
 			end
 
@@ -7860,7 +7860,7 @@ do
 			else
 				if Info.Compact then
 					DisplayLabel.Text =
-						string.format("%s: %s%s%s", Slider.Text, Slider.Prefix, Slider.Value, Slider.Suffix)
+					string.format("%s: %s%s%s", Slider.Text, Slider.Prefix, Slider.Value, Slider.Suffix)
 				elseif Info.HideMax then
 					DisplayLabel.Text = string.format("%s%s%s", Slider.Prefix, Slider.Value, Slider.Suffix)
 				else
@@ -10787,7 +10787,7 @@ function Library:CreateWindow(WindowInfo)
 	local MaxY = ViewportSize.Y - 64
 
 	Library.OriginalMinSize =
-		Vector2.new(math.min(Library.OriginalMinSize.X, MaxX), math.min(Library.OriginalMinSize.Y, MaxY))
+	Vector2.new(math.min(Library.OriginalMinSize.X, MaxX), math.min(Library.OriginalMinSize.Y, MaxY))
 	Library.MinSize = Vector2.new(math.min(WindowInfo.MinContainerWidth, MaxX), Library.OriginalMinSize.Y)
 
 	WindowInfo.Size = UDim2.fromOffset(
@@ -14507,7 +14507,7 @@ function Library:CreateLoading(LoadingInfo)
 		end
 
 		local RequiredHeight =
-			49
+		49
 			+ 48
 			+ InnerContent.UIListLayout.AbsoluteContentSize.Y
 
@@ -14620,7 +14620,7 @@ function Library:CreateLoading(LoadingInfo)
 
 		local HasButtons = ErrorButtonsHolder.Visible
 		local RequiredHeight =
-			49
+		49
 			+ 15
 			+ 18
 			+ 6
@@ -15266,8 +15266,8 @@ end
 local function IsValidFolderPath(Name: string): boolean
 	return typeof(Name) == "string" and (
 		Trim(Name) ~= "" and
-			not Name:match("^%s*$") and
-			not Name:find('[<>:"|%?%*%z]')
+		not Name:match("^%s*$") and
+		not Name:find('[<>:"|%?%*%z]')
 	)
 end
 
@@ -16044,7 +16044,7 @@ function SaveManager:BuildConfigSection(Tab: any, IconName: string)
 	end)
 
 	ConfigNameInput, ConfigList, ConfigJSONInput =
-		SaveManager.Library.Options.SaveManager_ConfigName,
+	SaveManager.Library.Options.SaveManager_ConfigName,
 	SaveManager.Library.Options.SaveManager_ConfigList,
 	SaveManager.Library.Options.SaveManager_JSON;
 
@@ -22238,38 +22238,38 @@ end
 									end
 								end)
 
-				task.spawn(function()
-					local lastUrl = nil
-					while not flag11 and arg.Parent do
-						task.wait(30)
-						local entryRef = obj3[arg]
-						if flag11 or not arg.Parent or not entryRef then
-							continue
-						end
+								task.spawn(function()
+									local lastUrl = nil
+									while not flag11 and arg.Parent do
+										task.wait(30)
+										local entryRef = obj3[arg]
+										if flag11 or not arg.Parent or not entryRef then
+											continue
+										end
 
-						local okReq, body = pcall(game.HttpGet, game, string.format(
-							"https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=%d&size=48x48&format=Png&isCircular=false",
-							arg.UserId
-						))
-						if okReq and type(body) == "string" then
-							local okDec, decoded = pcall(function()
-								return game:GetService("HttpService"):JSONDecode(body)
-							end)
-							local url = okDec and type(decoded) == "table" and decoded.data and decoded.data[1] and decoded.data[1].imageUrl
+										local okReq, body = pcall(game.HttpGet, game, string.format(
+											"https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=%d&size=48x48&format=Png&isCircular=false",
+											arg.UserId
+										))
+										if okReq and type(body) == "string" then
+											local okDec, decoded = pcall(function()
+												return game:GetService("HttpService"):JSONDecode(body)
+											end)
+											local url = okDec and type(decoded) == "table" and decoded.data and decoded.data[1] and decoded.data[1].imageUrl
 
-							if url and url ~= lastUrl then
-								if lastUrl ~= nil and entryRef.Icon and entryRef.Icon.Parent then
-									local newIcon = tbl12.GetPlayerIcon(arg)
-									if newIcon then
-										entryRef.Thumbnail = newIcon
-										entryRef.Icon.Image = newIcon
+											if url and url ~= lastUrl then
+												if lastUrl ~= nil and entryRef.Icon and entryRef.Icon.Parent then
+													local newIcon = tbl12.GetPlayerIcon(arg)
+													if newIcon then
+														entryRef.Thumbnail = newIcon
+														entryRef.Icon.Image = newIcon
+													end
+												end
+												lastUrl = url
+											end
+										end
 									end
-								end
-								lastUrl = url
-							end
-						end
-					end
-				end)
+								end)
 
 								local function fn24(character)
 									if flag11 or not tbl8.PlayerESP or not character then
@@ -23338,8 +23338,8 @@ end
 					end
 
 					if not pcall(function()
-						arg[arg2] = arg3
-					end) then
+							arg[arg2] = arg3
+						end) then
 						return
 					end
 					tbl16[arg] = tbl16[arg] or {}
@@ -23480,8 +23480,8 @@ end
 							do
 								tbl12.SetCameraOcclusionMode = function(devCameraOcclusionMode)
 									if pcall(function()
-										localPlayer.DevCameraOcclusionMode = devCameraOcclusionMode
-									end) and localPlayer.DevCameraOcclusionMode == devCameraOcclusionMode then
+											localPlayer.DevCameraOcclusionMode = devCameraOcclusionMode
+										end) and localPlayer.DevCameraOcclusionMode == devCameraOcclusionMode then
 										return true
 									end
 									return sethiddenproperty and pcall(sethiddenproperty, localPlayer, "DevCameraOcclusionMode", devCameraOcclusionMode)
@@ -25895,8 +25895,8 @@ end
 													if fn35() then
 														if v22.Parent and fn35(v22) and not fn21(v22) then
 															if pcall(tbl12.SNO, v22, 0.75, function()
-																return fn35(v22)
-															end) then
+																	return fn35(v22)
+																end) then
 																continue
 															end
 														else
@@ -33181,8 +33181,8 @@ Escape Timer: %*]]
 				end
 
 				if not (tbl8.AutoExplodeTarget or tbl8.AutoExplodeServer) and not tbl12.WaitForRuntimeCondition("AutoExplodeLoop", function()
-					return tbl8.AutoExplodeTarget or tbl8.AutoExplodeServer
-				end) then
+						return tbl8.AutoExplodeTarget or tbl8.AutoExplodeServer
+					end) then
 					return
 				end
 
@@ -40597,7 +40597,7 @@ Escape Timer: %*]]
 				"Kill",
 				"D:",
 				"Ow",
-				"D,:" ,
+				"D,:",
 				"Oops",
 				"Oop",
 				"😦",
@@ -40775,6 +40775,105 @@ Escape Timer: %*]]
 				tbl12.SetRuntimeToggle("AutoSlot", arg)
 			end,
 		})
+	end
+
+	do
+		local JoinLogBox = tbl15.Misc:AddLeftGroupbox("Join Logs", "log-in")
+		local LeaveLogBox = tbl15.Misc:AddRightGroupbox("Leave Logs", "log-out")
+
+		local function CreateLogList(Groupbox, EmptyText)
+			local List = Instance.new("Frame")
+			List.BackgroundTransparency = 1
+			List.Size = UDim2.new(1, 0, 0, 0)
+			List.AutomaticSize = Enum.AutomaticSize.Y
+			List.Parent = Groupbox.Container
+
+			local Layout = Instance.new("UIListLayout")
+			Layout.SortOrder = Enum.SortOrder.LayoutOrder
+			Layout.Padding = UDim.new(0, 4)
+			Layout.Parent = List
+
+			local Placeholder = Instance.new("TextLabel")
+			Placeholder.BackgroundTransparency = 1
+			Placeholder.Size = UDim2.new(1, 0, 0, 18)
+			Placeholder.Text = EmptyText
+			Placeholder.TextSize = 14
+			Placeholder.TextXAlignment = Enum.TextXAlignment.Left
+			Placeholder.FontFace = Library.Scheme.Font
+			Placeholder.TextColor3 = Library.Scheme.FontColor
+			Placeholder.LayoutOrder = 0
+			Placeholder.Parent = List
+			Library:AddToRegistry(Placeholder, { TextColor3 = "FontColor", FontFace = "Font" })
+
+			return List, Placeholder
+		end
+
+		local function AddLogRow(List, Placeholder, Groupbox, Order, Player, Text)
+			Placeholder.Visible = false
+
+			local Row = Instance.new("Frame")
+			Row.BackgroundTransparency = 1
+			Row.Size = UDim2.new(1, 0, 0, 36)
+			Row.AutomaticSize = Enum.AutomaticSize.Y
+			Row.LayoutOrder = -Order
+			Row.Parent = List
+
+			local RowLayout = Instance.new("UIListLayout")
+			RowLayout.FillDirection = Enum.FillDirection.Horizontal
+			RowLayout.VerticalAlignment = Enum.VerticalAlignment.Center
+			RowLayout.SortOrder = Enum.SortOrder.LayoutOrder
+			RowLayout.Padding = UDim.new(0, 6)
+			RowLayout.Parent = Row
+
+			local Headshot = Instance.new("ImageLabel")
+			Headshot.Size = UDim2.new(0, 36, 0, 36)
+			Headshot.BackgroundColor3 = Library.Scheme.MainColor
+			Headshot.LayoutOrder = 1
+			Headshot.Parent = Row
+			Library:AddToRegistry(Headshot, { BackgroundColor3 = "MainColor" })
+
+			local Label = Instance.new("TextLabel")
+			Label.BackgroundTransparency = 1
+			Label.Size = UDim2.new(1, -42, 0, 0)
+			Label.AutomaticSize = Enum.AutomaticSize.Y
+			Label.TextWrapped = true
+			Label.TextSize = 14
+			Label.TextXAlignment = Enum.TextXAlignment.Left
+			Label.TextYAlignment = Enum.TextYAlignment.Center
+			Label.Text = Text
+			Label.FontFace = Library.Scheme.Font
+			Label.TextColor3 = Library.Scheme.FontColor
+			Label.LayoutOrder = 2
+			Label.Parent = Row
+			Library:AddToRegistry(Label, { TextColor3 = "FontColor", FontFace = "Font" })
+
+			task.spawn(function()
+				local ok, Image = pcall(Players.GetUserThumbnailAsync, Players, Player.UserId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size48x48)
+				if ok and Image and Headshot.Parent then
+					Headshot.Image = Image
+				end
+			end)
+
+			task.defer(function()
+				Groupbox:Resize()
+			end)
+			Groupbox:Resize()
+		end
+
+		local JoinList, JoinPlaceholder = CreateLogList(JoinLogBox, "No joins logged yet")
+		local LeaveList, LeavePlaceholder = CreateLogList(LeaveLogBox, "No leaves logged yet")
+		local JoinCount = 0
+		local LeaveCount = 0
+
+		tbl12.SetRuntimeConnection("JoinLogs", Players.PlayerAdded, true, function(player)
+			JoinCount = JoinCount + 1
+			AddLogRow(JoinList, JoinPlaceholder, JoinLogBox, JoinCount, player, string.format("[%s] %s (@%s) [UserId: %s]", os.date("%Y-%m-%d %H:%M:%S"), player.DisplayName, player.Name, tostring(player.UserId)))
+		end)
+
+		tbl12.SetRuntimeConnection("LeaveLogs", Players.PlayerRemoving, true, function(player)
+			LeaveCount = LeaveCount + 1
+			AddLogRow(LeaveList, LeavePlaceholder, LeaveLogBox, LeaveCount, player, string.format("[%s] %s (@%s) [UserId: %s]", os.date("%Y-%m-%d %H:%M:%S"), player.DisplayName, player.Name, tostring(player.UserId)))
+		end)
 	end
 
 	do
@@ -41041,8 +41140,8 @@ Escape Timer: %*]]
 		end
 
 		Crash:AddButton({
-			Text = "Crash Server",
-			Tooltip = "Flings every unanchored part and player while spamming remotes until the server crashes",
+			Text = "Crash",
+			Tooltip = "Flings every unanchored part and player while spamming remotes for 30 seconds",
 			Callback = function()
 				CrashServer()
 			end,
