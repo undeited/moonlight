@@ -40778,7 +40778,7 @@ Escape Timer: %*]]
 	end
 
 	do
-		local JoinLogBox = tbl15.Misc:AddLeftGroupbox("Join Logs", "log-in")
+		local JoinLogBox = tbl15.Misc:AddRightGroupbox("Join Logs", "log-in")
 		local LeaveLogBox = tbl15.Misc:AddRightGroupbox("Leave Logs", "log-out")
 
 		local function CreateLogList(Groupbox, EmptyText)
@@ -40805,11 +40805,16 @@ Escape Timer: %*]]
 			Placeholder.Parent = List
 			Library:AddToRegistry(Placeholder, { TextColor3 = "FontColor", FontFace = "Font" })
 
-			return List, Placeholder
+			return List, Placeholder, {}
 		end
 
-		local function AddLogRow(List, Placeholder, Groupbox, Order, Player, Text)
+		local function AddLogRow(List, Placeholder, Rows, Groupbox, Order, Player, Text)
 			Placeholder.Visible = false
+
+			if Rows[Player.UserId] then
+				Rows[Player.UserId]:Destroy()
+				Rows[Player.UserId] = nil
+			end
 
 			local Row = Instance.new("Frame")
 			Row.BackgroundTransparency = 1
@@ -40817,6 +40822,7 @@ Escape Timer: %*]]
 			Row.AutomaticSize = Enum.AutomaticSize.Y
 			Row.LayoutOrder = -Order
 			Row.Parent = List
+			Rows[Player.UserId] = Row
 
 			local RowLayout = Instance.new("UIListLayout")
 			RowLayout.FillDirection = Enum.FillDirection.Horizontal
@@ -40854,25 +40860,25 @@ Escape Timer: %*]]
 				end
 			end)
 
+			Groupbox:Resize()
 			task.defer(function()
 				Groupbox:Resize()
 			end)
-			Groupbox:Resize()
 		end
 
-		local JoinList, JoinPlaceholder = CreateLogList(JoinLogBox, "No joins logged yet")
-		local LeaveList, LeavePlaceholder = CreateLogList(LeaveLogBox, "No leaves logged yet")
+		local JoinList, JoinPlaceholder, JoinRows = CreateLogList(JoinLogBox, "No joins logged yet")
+		local LeaveList, LeavePlaceholder, LeaveRows = CreateLogList(LeaveLogBox, "No leaves logged yet")
 		local JoinCount = 0
 		local LeaveCount = 0
 
 		tbl12.SetRuntimeConnection("JoinLogs", Players.PlayerAdded, true, function(player)
 			JoinCount = JoinCount + 1
-			AddLogRow(JoinList, JoinPlaceholder, JoinLogBox, JoinCount, player, string.format("[%s] %s (@%s) [UserId: %s]", os.date("%Y-%m-%d %H:%M:%S"), player.DisplayName, player.Name, tostring(player.UserId)))
+			AddLogRow(JoinList, JoinPlaceholder, JoinRows, JoinLogBox, JoinCount, player, string.format("%s (@%s) [UserId: %s]", player.DisplayName, player.Name, tostring(player.UserId)))
 		end)
 
 		tbl12.SetRuntimeConnection("LeaveLogs", Players.PlayerRemoving, true, function(player)
 			LeaveCount = LeaveCount + 1
-			AddLogRow(LeaveList, LeavePlaceholder, LeaveLogBox, LeaveCount, player, string.format("[%s] %s (@%s) [UserId: %s]", os.date("%Y-%m-%d %H:%M:%S"), player.DisplayName, player.Name, tostring(player.UserId)))
+			AddLogRow(LeaveList, LeavePlaceholder, LeaveRows, LeaveLogBox, LeaveCount, player, string.format("%s (@%s) [UserId: %s]", player.DisplayName, player.Name, tostring(player.UserId)))
 		end)
 	end
 
