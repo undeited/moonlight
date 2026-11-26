@@ -40853,12 +40853,7 @@ Escape Timer: %*]]
 			Label.Parent = Row
 			Library:AddToRegistry(Label, { TextColor3 = "FontColor", FontFace = "Font" })
 
-			task.spawn(function()
-				local ok, Image = pcall(Players.GetUserThumbnailAsync, Players, Player.UserId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size48x48)
-				if ok and Image and Headshot.Parent then
-					Headshot.Image = Image
-				end
-			end)
+			Headshot.Image = string.format("rbxthumb://type=AvatarHeadShot&id=%d&w=48&h=48", Player.UserId)
 
 			Groupbox:Resize()
 			task.defer(function()
@@ -40873,12 +40868,12 @@ Escape Timer: %*]]
 
 		tbl12.SetRuntimeConnection("JoinLogs", Players.PlayerAdded, true, function(player)
 			JoinCount = JoinCount + 1
-			AddLogRow(JoinList, JoinPlaceholder, JoinRows, JoinLogBox, JoinCount, player, string.format("%s (@%s) [UserId: %s]", player.DisplayName, player.Name, tostring(player.UserId)))
+			AddLogRow(JoinList, JoinPlaceholder, JoinRows, JoinLogBox, JoinCount, player, string.format("%s (@%s)", player.DisplayName, player.Name))
 		end)
 
 		tbl12.SetRuntimeConnection("LeaveLogs", Players.PlayerRemoving, true, function(player)
 			LeaveCount = LeaveCount + 1
-			AddLogRow(LeaveList, LeavePlaceholder, LeaveRows, LeaveLogBox, LeaveCount, player, string.format("%s (@%s) [UserId: %s]", player.DisplayName, player.Name, tostring(player.UserId)))
+			AddLogRow(LeaveList, LeavePlaceholder, LeaveRows, LeaveLogBox, LeaveCount, player, string.format("%s (@%s)", player.DisplayName, player.Name))
 		end)
 	end
 
